@@ -29,6 +29,9 @@ cf <- kmeans(df, 3, nstart = 20)
 df$cluster <- as.factor(cf$cluster)
 
 #plot clustered data
-ggplot(data=df, aes(x=x, y=y, color=cluster )) + 
-  geom_point() + theme(legend.position="bottom")
+ggplot(data=df, aes(x=x, y=y, color=cluster,shape=cluster)) +
+  geom_point() +
+  scale_colour_discrete(guide="legend", name="Clusters") +
+  scale_shape(name="Clusters") + 
+  theme(legend.position="bottom")
 
