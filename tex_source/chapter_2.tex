@@ -193,8 +193,8 @@ Algoritme \ref{algo:apriori} is dus in staat alle frequente itemsets met een min
 \Function{rulesGen}{$F$}
     \For {$F_k \in F$}
         \For {$\{E \subset F_k| E \neq \emptyset \wedge E \neq F_k \}$} 
-        	\If {$\conf\left(E \Rightarrow E \cap F_k \right) \geq minconf$}
-            	\State Assocation rule $E \Rightarrow E \cap F_k$ found
+        	\If {$\conf\left(E \Rightarrow F_k - E \right) \geq minconf$}
+            	\State Assocation rule $E \Rightarrow F_k - E $ found
             \EndIf
         \EndFor
     \EndFor
