@@ -1,0 +1,110 @@
+\chapter{De R programmeertaal}
+\section{Wat is R}
+\marginnote{R is beschikbaar op \url{https://www.r-project.com} en RStudio is verkrijgbaar op \url{https://www.rstudio.com}}
+R is een scriptingtaal speciaal ontwikkeld voor het gebruik in statistische software. De taal is open source en dus vrij beschikbaar. Er is ook een gratis IDE beschikbaar. De grote kracht van deze taal is de grote hoeveelheid beschikbare packages waarbij gebruikers reeds algoritmen ge\"implementeerd hebben. Zo kan de gebruiker van de taal dus focussen op zijn specifiek probleem, zonder noodzakelijk bezig te zijn met details.
+\section{Basisconcepten}
+\subsection{Variabelen}
+Omdat R een dynamische taal is, is het niet nodig om het type te vermelden. Men kan variabelen op 2 manieren toewijzen:
+\begin{minted}{R}
+x = 123
+y <- 321
+z = "Dit is een test string"
+\end{minted}
+Merk op dat indien statements op 1 lijn staan er geen puntkomma's nodig zijn om deze af te sluiten. R heeft heel wat functies al ingebouwd. Voorbeelden hiervan zijn \mintinline{R}{sqrt(x),cos(x),log(x)} en veel meer. Verder volgt R ook dezelfde commando's als op Unix systemen. Indien een gebruiker dus een variable wil verwijderen uit de workspace kan met \mintinline{R}{rm(x)} gebruiken. Gelijkaardig kan men \mintinline{R}{ls()} gebruiken. Indien men RStudio gebruikt als IDE dan staan de variabelen automatisch rechts vermeld.
+
+Bij \emph{data mining} en statistiek maakt men vaak gebruik van vectoren en matrices om data voor te stellen. Het is daarom ook logisch dat R heel wat methoden bevat om matrices en vectoren te manipuleren. Hieronder zijn enkel voorbeelden gegeven.
+\newpage
+\subsection{Voorbeeldcode: vectoren en matrices}
+\begin{minted}{R}
+#Comments beginnen met een #-teken.
+#Het alloceren van een vector
+positie <- c(0,5,0)
+#Het is ook mogelijk om automatisch een vector op te vullen
+sequence <- seq(from=0, to=10, by=1) #sequence = {0,1,2,3,4,5,6,7,8,9,10}
+#Of om een bepaalde herhaling uit te voeren
+rep = rep(2, times=5) #rep = {2, 2}, 2 kan ook een vector zijn
+#Optellen van 2 vectoren
+delta_pos <- {1,0,0}
+positie = positie + delta_pos
+#constanten en een vector:
+positie = positie * 0.5
+#Vectoren in R beginnen, in tegenstelling tot veel andere talen, bij 1:
+first_element = sequence[1]
+last_element = sequence[11]
+#Alles behalve 1 element:
+all_without_first = sequence[-1]
+#Subset:
+first_five = sequence[1:5]
+#Matrices
+mat = matrix(1:9, nrow=3, byrow=TRUE) #Vult de matrix met waarden per rij( dus rij 1: 1,2,3 )
+mat = matrix(1:9, nrow=3, byrow=FALSE) #Vult de matrix met waarden per kolom( dus rij 1: 1,4,7 )
+#Matrices indexering:
+top_left = mat[1,1] #top_left = 1
+row_two = mat[2,] #row_to = {2,5,8}
+\end{minted}
+\subsection{Controle structuren}
+R heeft dezelfde controlestructuren zoals men aantreft in andere programmeertalen. Deze zijn:
+\begin{itemize}
+\item \textbf{if}: \mintinline{R}{ if(condition) expr1 else expr2 } Hierbij kan men braces gebruiken indien de expressies uit meerdere statements bestaan. 
+\item \textbf{for}: \mintinline{R}{ for( var in seq ) expr }
+\item \textbf{while}: \mintinline{R}{ while( cond ) expr }
+\item \textbf{switch}: \mintinline{R}{ switch( expr, case1, case2, .. ) }
+\end{itemize}
+\newpage
+\subsection{Methoden}
+Methoden in R worden als volgt gedefinieerd en opgeroepen: 
+\begin{minted}{R}
+mean <- function( input )
+{
+	return( sum( input ) / length( input ) )
+}
+mean( c( 5, 10 ) ) #print 7.5 uit
+\end{minted}
+\subsection{Dataframes}
+Een andere vaak gebruikte datastructuur is een \emph{dataframe}. Deze structuur wordt het best vergeleken met een matrix. Het bestaat uit een collectie lijsten met dezelfde lengte. Een voordeel aan dataframes vergeleken met matrices is dat ze gebruikt kunnen worden  zoals een database. De gebruiker kan rijen toevoegen of een query uitvoeren op een bepaalde kolom. Men kan een dataframe bekijken via \mintinline{R}{View(dataframe)}. Vectoren toevoegen doet met via \mintinline{R}{attach() en detach()}. Bepaalde data opvragen kan als volgt: \mintinline{R}{data[ gender=="male" & age > 18,]}. Let hierbij op de komma om alle kolommen te selecteren.
+%
+\section{Het gebruik van packages}
+\marginnote{Een overzicht van alle packages is beschikbaar op: \url{https://cran.r-project.org/web/packages/available_packages_by_date.html}}
+De grote sterkte van R zijn de grote hoeveelheid aanwezige \emph{packages}, bibliotheken met een bepaald doel. Het installeren van deze \emph{packages} is zeer eenvoudig: \mintinline{R}{install.packages(wordcloud)}. en het gebruik nog eenvoudiger: \mintinline{R}{library(wordcloud)}. Een \emph{package} moet maar eenmaal ge\"installeerd worden en kan daarna met bovenstaand commando geladen worden.
+%
+\section{Association rules in R}
+Als concreet voorbeeld nemen we de \emph{association rules} aangeleerd in vorig hoofdstuk. Hiervoor is het package \mintinline{R}{arules} beschikbaar.
+Stel dat we volgend bestand beschikbaar hebben:
+\marginnote{De inhoud van het testbestand: transactions.txt}
+\begin{minted}{R}
+A,B,C
+B,C
+A,B,D
+A,B,C,D
+A,B
+B,C
+A
+B
+\end{minted}
+Het inlezen is zeer eenvoudig:
+\begin{minted}{R}
+transactions <- read.transactions("transactions", format="basket", sep=",")
+\end{minted}
+Hier geven we de bestandsnaam mee, samen met het formaat: een \emph{basket}. Dit maakt het duidelijk voor het package dat de data een winkelmand voorstelt. Tot slot vermelden we de seperator waarmee de data gescheiden is.
+
+Indien we de transactions willen bekijken dan kan dit via een aantal methoden: \mintinline{R}{inspect(transactions)} print de data uit in de console, \mintinline{R}{image(transactions)} geeft een afbeelding van een grid weer waarbij een cel zwart is ingekleurd indien een item aanwezig is en \mintinline{R}{itemFrequencyPlot(transactions, support=0.1)} visualiseert hoe vaak elk item voorkomt.
+
+In het vorig hoofdstuk hebben het apriori algoritme besproken. Ook dit algoritme is aanwezig in deze \emph{package}. We kunnen automatisch de regels laten genereren via:
+\begin{minted}{R}
+rules <- apriori(transactions, paramater=list(supp=0.5,conf=0.5))
+inspect( rules )
+\end{minted}
+Dan krijgen we de volgende output:
+\begin{minted}{console}
+> inspect(rules)
+    lhs    rhs support confidence lift     
+[1] {}  => {C} 0.500   0.5000000  1.0000000
+[2] {}  => {A} 0.625   0.6250000  1.0000000
+[3] {}  => {B} 0.875   0.8750000  1.0000000
+[4] {C} => {B} 0.500   1.0000000  1.1428571
+[5] {B} => {C} 0.500   0.5714286  1.1428571
+[6] {A} => {B} 0.500   0.8000000  0.9142857
+[7] {B} => {A} 0.500   0.5714286  0.9142857
+\end{minted}
+
+We kunnen ook sequenti\"ele patronen laten genereren via het \mintinline{R}{arulesSequences} package. 
